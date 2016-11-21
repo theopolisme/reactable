@@ -31,6 +31,7 @@ export class Table extends React.Component {
 
         // used for generating a key for a <Tr> that will change <Td> counts -- avoids jitters in the update
         this.cloneIndex = 0;
+        this.renderNoDataComponent = this.renderNoDataComponent.bind(this);
     }
 
     filterBy(filter) {
@@ -598,6 +599,17 @@ export class Table extends React.Component {
         }
     }
 
+    renderNoDataComponent(columns) {
+        let noDataFunc = this.props.noDataComponent;
+        if (typeof noDataFunc === 'function') {
+            return noDataFunc(columns);
+        } else if (this.props.noDataText) {
+            return <tr className="reactable-no-data"><td colSpan={columns.length}>{this.props.noDataText}</td></tr>;
+        } else {
+            return null;
+        }
+    }
+
     render() {
         let children = [];
         let columns;
@@ -720,9 +732,7 @@ export class Table extends React.Component {
         }
 
         // Manually transfer props
-        let props = filterPropsFrom(this.props);
-
-        let noDataText = this.props.noDataText ? <tr className="reactable-no-data"><td colSpan={columns.length}>{this.props.noDataText}</td></tr> : null;
+        let { noDataComponent, ...props } = filterPropsFrom(this.props);
 
         var tableHeader = null;
         if (columns && columns.length > 0 && showHeaders) {
@@ -747,7 +757,7 @@ export class Table extends React.Component {
         return <table {...props}>
             {tableHeader}
             <tbody className="reactable-data" key="tbody">
-                {currentChildren.length > 0 ? currentChildren : noDataText}
+                {currentChildren.length > 0 ? currentChildren : this.renderNoDataComponent(columns)}
             </tbody>
             {pagination === true ?
              <Paginator colSpan={columns.length}
@@ -776,4 +786,15 @@ Table.defaultProps = {
     itemsPerPage: 0,
     filterBy: '',
     hideFilterInput: false
+};
+
+Table.propTypes = {
+    sortBy: React.PropTypes.bool,
+    itemsPerPage: React.PropTypes.number,               // number of items to display per page
+    filterable: React.PropTypes.array,                  // columns to look at when applying the filter specified by filterBy
+    filterBy: React.PropTypes.string,                   // text to filter the results by (see filterable)
+    hideFilterInput: React.PropTypes.bool,              // Whether the default input field for the search/filter should be hidden or not
+    hideTableHeader: React.PropTypes.bool,              // Whether the table header should be hidden or not
+    noDataText: React.PropTypes.string,                 // Text to be displayed in the event there is no data to show
+    noDataComponent: React.PropTypes.func               // function called to provide a component to display in the event there is no data to show (supercedes noDataText)
 };
