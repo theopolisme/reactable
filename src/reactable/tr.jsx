@@ -17,17 +17,22 @@ export class Tr extends React.Component {
             children = children.concat(this.props.columns.map(function({ props = {}, ...column}, i) {
                 if (this.props.data.hasOwnProperty(column.key)) {
                     var value = this.props.data[column.key];
+                    var componentType = Td;
 
                     if (
                         typeof(value) !== 'undefined' &&
                             value !== null &&
                                 value.__reactableMeta === true
                     ) {
+                        componentType = value.component || componentType;
                         props = value.props;
                         value = value.value;
                     }
 
-                    return <Td column={column} key={column.key} {...props}>{value}</Td>;
+                    props.column = column;
+                    props.key = column.key;
+                    props.children = value;
+                    return React.createElement(componentType, props);
                 } else {
                     return <Td column={column} key={column.key} />;
                 }

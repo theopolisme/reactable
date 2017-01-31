@@ -49,7 +49,8 @@ module.exports = function(grunt) {
 
                     'tmp/reactable.js': 'src/reactable.jsx',
 
-                    'build/tests/reactable_test.js': 'tests/reactable_test.jsx'
+                    'build/tests/reactable_test.js': 'tests/reactable_test.jsx',
+                    'build/tests/Monitored.js': 'tests/Monitored.jsx'
                 },
                 options: { modules: 'umdStrict' }
             },
@@ -73,7 +74,8 @@ module.exports = function(grunt) {
 
                     'lib/reactable.js': 'src/reactable.jsx',
 
-                    'build/tests/reactable_test.js': 'tests/reactable_test.jsx'
+                    'build/tests/reactable_test.js': 'tests/reactable_test.jsx',
+                    'build/tests/Monitored.js': 'tests/Monitored.jsx'
                 },
                 options: { modules: 'common' }
             }

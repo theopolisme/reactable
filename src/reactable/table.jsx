@@ -99,6 +99,7 @@ export class Table extends React.Component {
 
                                 childData[descendant.props.column] = {
                                     value: value,
+                                    component: descendant.type,
                                     props: filterPropsFrom(descendant.props),
                                     __reactableMeta: true
                                 };
