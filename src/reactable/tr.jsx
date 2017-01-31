@@ -68,6 +68,7 @@ export class Tr extends React.Component {
 
             if (this.props.data.hasOwnProperty(column.key)) {
                 var value = this.props.data[column.key];
+                var componentType = Td;
 
                 if (
                     typeof(value) !== 'undefined' &&
@@ -76,12 +77,13 @@ export class Tr extends React.Component {
                 ) {
                     // merge the props
                     props = extend(props, value.props);
+                    componentType = value.component || componentType;
                     value = value.value;
                 }
-
-                tds.push(
-                    <Td column={column} key={column.key} {...props}>{value}</Td>
-                );
+                props.column = column;
+                props.key = column.key;
+                props.children = value;
+                tds.push(React.createElement(componentType, props));
             } else {
                 tds.push(
                     <Td column={column} key={column.key} />
@@ -106,7 +108,6 @@ export class Tr extends React.Component {
             let trs = this.buildRows.call(this, renderState);
             children = children.concat(trs);
         }
-
 
         return React.DOM.tr(props, children);
     }

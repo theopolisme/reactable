@@ -1,5 +1,6 @@
 var ReactTestUtils = React.addons.TestUtils;
 var expect = chai.expect;
+import Monitored from "./Monitored.jsx";
 
 var ReactableTestUtils = {
     resetTestEnvironment:  function() {
@@ -138,6 +139,30 @@ describe('Reactable', function() {
         });
     });
 
+    describe('adding a custom Component to the <Tr>', function(){
+        context("that resolves to a <Td>", function(){
+            before(function() {
+                ReactDOM.render(
+                    <Reactable.Table className="table" id="table">
+                        <Reactable.Tr>
+                            <Reactable.Td column="Name">Griffin Smith</Reactable.Td>
+                        </Reactable.Tr>
+                        <Reactable.Tr>
+                            <Monitored component={Reactable.Td} column="Name">Lee Salminen</Monitored>
+                        </Reactable.Tr>
+                    </Reactable.Table>,
+                    ReactableTestUtils.testNode()
+                );
+            });
+
+            it('renders the rows with the correct data', function() {
+                ReactableTestUtils.expectRowText(0, ['Griffin Smith']);
+                ReactableTestUtils.expectRowText(1, ['Lee Salminen']);
+            });
+
+            after(ReactableTestUtils.resetTestEnvironment);
+        });
+    });
     describe('adding <Td>s to the <Tr>s', function() {
         context('with only one <Td>', function() {
             before(function() {
