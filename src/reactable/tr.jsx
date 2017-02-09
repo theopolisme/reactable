@@ -51,6 +51,7 @@ export class Tr extends React.Component {
         let columns = this.props.columns;
         var tds = [];
 
+        var columnsToSkip = 0;
         // iterate through all columns and create a <Td> for each one
         for (var idx = 0; idx < columns.length; idx++) {
             var { props = {}, ...column } = columns[idx];
@@ -66,6 +67,12 @@ export class Tr extends React.Component {
                 continue; // skip render of <Td>
             }
 
+            if (columnsToSkip > 0) {
+                columnsToSkip--;
+                continue;
+            }
+
+
             if (this.props.data.hasOwnProperty(column.key)) {
                 var value = this.props.data[column.key];
                 var componentType = Td;
@@ -80,6 +87,12 @@ export class Tr extends React.Component {
                     componentType = value.component || componentType;
                     value = value.value;
                 }
+
+                var colSpan = props.colSpan || 1;
+
+                // we will use 1 column (ourself), no need to skip that
+                columnsToSkip = colSpan - 1;
+
                 props.column = column;
                 props.key = column.key;
                 props.children = value;
